@@ -23,10 +23,9 @@ int main(int argc, char **argv)
         std::cerr << "Password cannot be empty" << std::endl;
         return 1;
     }
-
     try
     {
-        Server server(port);
+        Server server(port, password);
 
         server.setup();
         server.run();

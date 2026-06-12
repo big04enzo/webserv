@@ -7,6 +7,11 @@ class Client
 {
 private:
     int fd;
+    std::string nick_name;
+    std::string user_name;
+    std::string real_name;
+    int pass_ok;
+    int  registered;
     std::string readBuffer;
     std::string writeBuffer;
 

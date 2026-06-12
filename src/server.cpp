@@ -10,8 +10,8 @@ void Server::signalHandler(int)
     }
 }
 
-Server::Server(int port)
-    : server_fd(-1), epoll_fd(-1), port(port), running(true)
+Server::Server(int port, std::string pass)
+    : server_fd(-1), epoll_fd(-1), port(port), running(true), pass(pass)
 {
     std::memset(&server_addr, 0, sizeof(server_addr));
     Server::instance = this;
@@ -73,7 +73,10 @@ void Server::setup()
     ev.data.fd = shutdown_pipe[0];
     epoll_ctl(epoll_fd, EPOLL_CTL_ADD, shutdown_pipe[0], &ev);
 
-    std::cout << "Server running on port " << port << std::endl;
+    std::cout << "Welcome! Please register in this exact order: " << std::endl;
+    std::cout << "PASS <server-password>" << std::endl;
+    std::cout << "NICK <nickname>" << std::endl;
+    std::cout << "USER <user> 0 * :<real name>" << std::endl;
 }
 
 void Server::run()
@@ -127,6 +130,29 @@ void Server::acceptClient()
 
     std::cout << "Client connected: " << client_fd << std::endl;
 }
+
+/*std::string& Server::handlePass(char* buffer, int fd)
+{
+    char buffer[30000];
+
+    int bytes = recv(fd, buffer, sizeof(buffer), 0);
+
+    if (bytes <= 0)
+    {
+        removeClient(fd);
+        return;
+    }
+    if (buffer.empty())
+    {
+
+    }
+    if (buffer == pass)
+    {
+        clients[fd].pass_ok = 1;
+    }
+
+}*/
+
 
 std::string handleCommands(char *buffer)
 {

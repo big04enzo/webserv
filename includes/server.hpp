@@ -20,6 +20,7 @@ private:
     int epoll_fd;
     int port;
     bool running;
+    std::string pass;
 
     int shutdown_pipe[2];
 
@@ -36,9 +37,10 @@ private:
     void acceptClient();
     void readClient(int fd);
     void removeClient(int fd);
+    std::string& handlePass(char* buffer, int fd);
 
 public:
-    Server(int port);
+    Server(int port, std::string pass);
     ~Server();
 
     void setup();
