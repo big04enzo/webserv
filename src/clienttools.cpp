@@ -1,5 +1,50 @@
-
 #include "../includes/server.hpp"
+
+bool safeRecv(int fd, std::string &out)
+{
+    char buffer[4096];
+
+    int bytes = recv(fd, buffer, sizeof(buffer), 0);
+
+    if (bytes == 0)
+        return false;
+
+    if (bytes < 0)
+    {
+        if (errno == EAGAIN || errno == EWOULDBLOCK)
+            return true;
+        return false;
+    }
+
+    buffer[bytes] = '\0';
+    out.append(buffer, bytes);
+
+    return true;
+}
+
+bool safeSend(int fd, const std::string &msg)
+{
+    size_t totalSent = 0;
+
+    while (totalSent < msg.size())
+    {
+        int sent = send(fd,
+                        msg.c_str() + totalSent,
+                        msg.size() - totalSent,
+                        0);
+
+        if (sent <= 0)
+        {
+            if (errno == EAGAIN || errno == EWOULDBLOCK)
+                continue;
+
+            return false;
+        }
+        totalSent += sent;
+    }
+
+    return true;
+}
 
 void Server::acceptClient()
 {
@@ -22,26 +67,28 @@ void Server::acceptClient()
 
 void Server::readClient(int fd)
 {
-    char buffer[30000];
+    std::string data;
 
-    int bytes = recv(fd, buffer, sizeof(buffer), 0);
-
-    if (bytes <= 0)
+    if (!safeRecv(fd, data))
     {
         removeClient(fd);
-        return;
+        return ;
     }
 
-    buffer[bytes] = '\0';
+    clients[fd].getReadBuffer().append(data);
 
-    clients[fd].getReadBuffer().append(buffer, bytes);
+    std::string msg = handleCommands(clients[fd].getReadBuffer().c_str(), fd);
 
-    std::string msg = handleCommands(buffer, fd);
+    if (!msg.empty())
+    {
+        if (!safeSend(fd, msg))
+        {
+            removeClient(fd);
+            return ;
+        }
+    }
 
-    send(fd, msg.c_str(), msg.size(), 0);
-
-    std::string std = commandcheck(fd);
-    std::cout << std << std::endl;
+    std::cout << commandcheck(fd) << std::endl;
 }
 
 void Server::removeClient(int fd)

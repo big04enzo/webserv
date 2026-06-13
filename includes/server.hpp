@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <vector>
 #include "client.hpp"
+#include <cerrno>
 #include <sstream>
 
 class Server
@@ -25,9 +26,7 @@ private:
     std::string pass;
 
     int shutdown_pipe[2];
-
     sockaddr_in server_addr;
-
     std::map<int, Client> clients;
 
     struct epoll_event events[1024];
@@ -36,10 +35,15 @@ private:
 
     static void signalHandler(int sig);
 
+    void setupSystem();
+    void setupSocket();
+    void setupEpoll();
+
+
     void acceptClient();
     void readClient(int fd);
     void removeClient(int fd);
-    std::string handleCommands(char *buffer, int fd);
+    std::string handleCommands(const char *buffer, int fd);
     std::string handlePass(std::vector<std::string> cmd, int fd);
     std::string handleNick(std::vector<std::string> cmd, int fd);
     bool isNickUnique(const std::string &nick, int fd);

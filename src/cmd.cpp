@@ -1,6 +1,6 @@
 #include "../includes/server.hpp"
 
-std::vector<std::string> splitCommand(char *buffer)
+std::vector<std::string> splitCommand(const char *buffer)
 {
     std::vector<std::string> tokens;
     std::string line(buffer);
@@ -34,7 +34,7 @@ std::vector<std::string> splitCommand(char *buffer)
     return tokens;
 }
 
-std::string Server::handleCommands(char *buffer, int fd)
+std::string Server::handleCommands(const char *buffer, int fd)
 {
     std::vector<std::string> cmd = splitCommand(buffer);
 
