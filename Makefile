@@ -4,7 +4,8 @@ CXX = c++
 CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRC =	src/main.cpp \
-		src/server.cpp \
+		src/setupserver.cpp \
+		src/runserver.cpp \
 		src/client.cpp \
 		src/cmd.cpp \
 		src/auth.cpp \

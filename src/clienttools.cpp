@@ -77,7 +77,7 @@ void Server::readClient(int fd)
 
     clients[fd].getReadBuffer().append(data);
 
-    std::string msg = handleCommands(clients[fd].getReadBuffer().c_str(), fd);
+    std::string msg = handleCommands(data.c_str(), fd);
 
     if (!msg.empty())
     {
