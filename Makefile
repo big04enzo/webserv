@@ -5,7 +5,9 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 
 SRC =	src/main.cpp \
 		src/server.cpp \
-		src/client.cpp
+		src/client.cpp \
+		src/cmd.cpp \
+		src/auth.cpp
 
 OBJ = $(SRC:.cpp=.o)
 

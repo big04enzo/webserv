@@ -23,6 +23,8 @@ public:
     int getFd() const;
     void setPASS_ok(int) ;
     int getPASS_ok() const;
+    void setNick(std::string nick) ;
+    std::string getNick() const;
     std::string& getReadBuffer();
     std::string& getWriteBuffer();
 };

@@ -40,6 +40,8 @@ private:
     void removeClient(int fd);
     std::string handleCommands(char *buffer, int fd);
     std::string handlePass(std::vector<std::string> cmd, int fd);
+    std::string handleNick(std::vector<std::string> cmd, int fd);
+    bool isNickUnique(const std::string &nick, int fd);
 
 public:
     Server(int port, std::string pass);

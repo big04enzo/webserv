@@ -32,3 +32,13 @@ int Client::getPASS_ok() const
 {
     return pass_ok;
 }
+
+void Client::setNick(std::string nick)
+{
+    nick_name = nick;
+}
+
+std::string Client::getNick() const
+{
+    return nick_name;
+}
