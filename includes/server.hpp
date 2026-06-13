@@ -13,6 +13,7 @@
 #include <cstdlib>
 #include <vector>
 #include "client.hpp"
+#include <sstream>
 
 class Server
 {
@@ -42,6 +43,8 @@ private:
     std::string handlePass(std::vector<std::string> cmd, int fd);
     std::string handleNick(std::vector<std::string> cmd, int fd);
     bool isNickUnique(const std::string &nick, int fd);
+    std::string handleUser(std::vector<std::string> cmd, int fd);
+    std::string commandcheck(int fd);
 
 public:
     Server(int port, std::string pass);

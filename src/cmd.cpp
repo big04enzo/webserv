@@ -50,5 +50,18 @@ std::string Server::handleCommands(char *buffer, int fd)
         return handlePass(cmd, fd);
     if (result == "NICK")
         return handleNick(cmd,fd);
+    if (result == "USER")
+        return handleUser(cmd, fd);
     return ":IRC.SERV 421 " + cmd[0] + " :Unknown command\r\n";
 }
+
+std::string Server::commandcheck(int fd)
+{
+    std::ostringstream oss;
+    oss << fd;
+    std::string id = oss.str();
+
+    if (clients[fd].getRegistered() == 1)
+        return "client " + id + " :Succefully registered\r\n";
+    return "";
+} 

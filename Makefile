@@ -7,7 +7,8 @@ SRC =	src/main.cpp \
 		src/server.cpp \
 		src/client.cpp \
 		src/cmd.cpp \
-		src/auth.cpp
+		src/auth.cpp \
+		src/clienttools.cpp 
 
 OBJ = $(SRC:.cpp=.o)
 

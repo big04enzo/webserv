@@ -13,7 +13,6 @@ private:
     int pass_ok;
     int  registered;
     std::string readBuffer;
-    std::string writeBuffer;
 
 public:
     Client();
@@ -22,11 +21,16 @@ public:
 
     int getFd() const;
     void setPASS_ok(int) ;
+    int getRegistered() const;
+    void setRegistered(int) ;
     int getPASS_ok() const;
     void setNick(std::string nick) ;
     std::string getNick() const;
+    void setUsername(std::string nick) ;
+    std::string getUsername() const;
+    void setRealname(std::string nick) ;
+    std::string getRealname() const;
     std::string& getReadBuffer();
-    std::string& getWriteBuffer();
 };
 
 #endif

@@ -18,10 +18,6 @@ std::string& Client::getReadBuffer()
 {
     return readBuffer;
 }
-std::string& Client::getWriteBuffer()
-{
-    return writeBuffer;
-}
 
 void Client::setPASS_ok(int value)
 {
@@ -33,6 +29,16 @@ int Client::getPASS_ok() const
     return pass_ok;
 }
 
+void Client::setRegistered(int value)
+{
+    registered = value;
+}
+
+int Client::getRegistered() const
+{
+    return registered;
+}
+
 void Client::setNick(std::string nick)
 {
     nick_name = nick;
@@ -41,4 +47,24 @@ void Client::setNick(std::string nick)
 std::string Client::getNick() const
 {
     return nick_name;
+}
+
+void Client::setUsername(std::string user)
+{
+    user_name = user;
+}
+
+std::string Client::getUsername() const
+{
+    return user_name;
+}
+
+void Client::setRealname(std::string real)
+{
+    real_name = real;
+}
+
+std::string Client::getRealname() const
+{
+    return real_name;
 }

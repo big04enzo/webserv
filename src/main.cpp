@@ -1,5 +1,19 @@
 #include "../includes/server.hpp"
 
+bool isValidPort(const std::string &s)
+{
+    if (s.empty())
+        return false;
+
+    for (size_t i = 0; i < s.size(); i++)
+    {
+        if (!isdigit(s[i]))
+            return false;
+    }
+
+    return true;
+}
+
 int main(int argc, char **argv)
 {
     if (argc != 3)
@@ -8,6 +22,11 @@ int main(int argc, char **argv)
         return 1;
     }
 
+    if (!isValidPort(argv[1]))
+    {
+        std::cerr << "Invalid port format" << std::endl;
+        return 1;
+    }
     int port = std::atoi(argv[1]);
 
     if (port <= 0 || port > 65535)
