@@ -11,6 +11,7 @@
 #include <iostream>
 #include <map>
 #include <cstdlib>
+#include <vector>
 #include "client.hpp"
 
 class Server
@@ -37,7 +38,8 @@ private:
     void acceptClient();
     void readClient(int fd);
     void removeClient(int fd);
-    std::string& handlePass(char* buffer, int fd);
+    std::string handleCommands(char *buffer, int fd);
+    std::string handlePass(std::vector<std::string> cmd, int fd);
 
 public:
     Server(int port, std::string pass);

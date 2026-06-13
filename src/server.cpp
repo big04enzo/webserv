@@ -131,35 +131,73 @@ void Server::acceptClient()
     std::cout << "Client connected: " << client_fd << std::endl;
 }
 
-/*std::string& Server::handlePass(char* buffer, int fd)
+std::vector<std::string> splitCommand(char *buffer)
 {
-    char buffer[30000];
+    std::vector<std::string> tokens;
+    std::string line(buffer);
 
-    int bytes = recv(fd, buffer, sizeof(buffer), 0);
+    while (!line.empty() &&
+          (line[line.size() - 1] == '\n'
+        || line[line.size() - 1] == '\r'))
+        line.erase(line.size() - 1);
 
-    if (bytes <= 0)
+    size_t i = 0;
+
+    while (i < line.size())
     {
-        removeClient(fd);
-        return;
+        while (i < line.size() &&
+              (line[i] == ' ' || line[i] == '\t'))
+            i++;
+
+        if (i >= line.size())
+            break;
+
+        size_t start = i;
+
+        while (i < line.size() &&
+              line[i] != ' ' &&
+              line[i] != '\t')
+            i++;
+
+        tokens.push_back(line.substr(start, i - start));
     }
-    if (buffer.empty())
-    {
 
-    }
-    if (buffer == pass)
-    {
-        clients[fd].pass_ok = 1;
-    }
-
-}*/
+    return tokens;
+}
 
 
-std::string handleCommands(char *buffer)
+std::string Server::handlePass(std::vector<std::string> cmd, int fd)
 {
-    std::string msg = "UNKNOWN COMMAND\r\n";
-    if (strcmp(buffer, "PASS\n") == 0)
-        msg = "handlePass();\n"; // handlePass();
-    return msg;    
+    if (clients[fd].getPASS_ok() == 1)
+        return ":IRC.SERV 462 PASS :You may not reregister\r\n";
+
+    if (cmd.size() < 2)
+        return ":IRC.SERV 461 PASS :Not enough parameters\r\n";
+
+    if (cmd[1] == pass)
+    {
+        clients[fd].setPASS_ok(1);
+        return "";
+    }
+    return ":IRC.SERV 464 PASS :Password incorrect\r\n";
+}
+
+std::string Server::handleCommands(char *buffer, int fd)
+{
+    std::vector<std::string> cmd = splitCommand(buffer);
+
+    if (cmd.empty())
+        return "";
+    std::string result = cmd[0];
+    for (size_t i = 0; i < result.size(); i++)
+    {
+        if (result[i] >= 'a' && result[i] <= 'z')
+            result[i] = result[i] - 32;
+    }
+    if (result == "PASS")
+        return handlePass(cmd, fd);
+
+    return ":IRC.SERV 421 " + cmd[0] + " :Unknown command\r\n";
 }
 
 void Server::readClient(int fd)
@@ -184,7 +222,7 @@ void Server::readClient(int fd)
               << buffer << std::endl;
     }
 
-    std::string msg = handleCommands(buffer);
+    std::string msg = handleCommands(buffer, fd);
 
     send(fd, msg.c_str(), msg.size(), 0);
 }

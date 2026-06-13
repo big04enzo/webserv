@@ -21,7 +21,8 @@ public:
     ~Client();
 
     int getFd() const;
-
+    void setPASS_ok(int) ;
+    int getPASS_ok() const;
     std::string& getReadBuffer();
     std::string& getWriteBuffer();
 };

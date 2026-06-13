@@ -22,3 +22,13 @@ std::string& Client::getWriteBuffer()
 {
     return writeBuffer;
 }
+
+void Client::setPASS_ok(int value)
+{
+    pass_ok = value;
+}
+
+int Client::getPASS_ok() const
+{
+    return pass_ok;
+}
