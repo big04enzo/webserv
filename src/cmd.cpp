@@ -55,13 +55,7 @@ std::string Server::handleCommands(const char *buffer, int fd)
     return ":IRC.SERV 421 " + cmd[0] + " :Unknown command\r\n";
 }
 
-std::string Server::commandcheck(int fd)
+void Server::logState(int fd, const std::string &msg)
 {
-    std::ostringstream oss;
-    oss << fd;
-    std::string id = oss.str();
-
-    if (clients[fd].getRegistered() == 1)
-        return "client " + id + " :Succefully registered\r\n";
-    return "";
-} 
+    std::cout << "[CLIENT " << fd << "] " << msg << std::endl;
+}

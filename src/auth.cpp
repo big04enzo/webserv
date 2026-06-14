@@ -83,41 +83,70 @@ std::string Server::handleUser(std::vector<std::string> cmd, int fd)
 {
     if (clients[fd].getPASS_ok() != 1)
         return ":IRC.SERV 464 USER :Password required\r\n";
+
     if (cmd.size() < 5)
         return ":IRC.SERV 461 USER :Not enough parameters\r\n";
-    if (clients[fd].getRegistered() || !clients[fd].getRealname().empty())
+
+    if (clients[fd].getRegistered())
         return ":IRC.SERV 462 USER :You may not reregister\r\n";
+
     std::string realname = reconstructRealName(cmd);
+
     if (!isValid(cmd[1]) || !isValidRealName(realname))
         return ":IRC.SERV 461 USER :Bad format\r\n";
+
     if (cmd[2] != "0" || cmd[3] != "*")
         return ":IRC.SERV 461 USER :Invalid parameters\r\n";
+
     clients[fd].setUsername(cmd[1]);
     clients[fd].setRealname(realname);
+    logState(fd, "User set");
     if (!clients[fd].getNick().empty())
     {
         clients[fd].setRegistered(1);
-        return ":IRC.SERV 001 :Welcome to the IRC network\r\n";
+        logState(fd, "Client fully registered");
+        return ":IRC.SERV 001 " + clients[fd].getNick() + " :Welcome to the IRC network\r\n";
     }
-    return "";
+
+    return "\r\n";
 }
+
 
 std::string Server::handleNick(std::vector<std::string> cmd, int fd)
 {
     if (clients[fd].getPASS_ok() != 1)
         return ":IRC.SERV 464 NICK :Password required\r\n";
+
     if (cmd.size() != 2)
         return ":IRC.SERV 461 NICK :Invalid parameters\r\n";
+
     if (!isValid(cmd[1]))
         return ":IRC.SERV 432 NICK :Erroneous nickname\r\n";
+
     if (!isNickUnique(cmd[1], fd))
         return ":IRC.SERV 433 * " + cmd[1] + " :Nickname is already in use\r\n";
+
+    std::string old_nick = clients[fd].getNick();
+
     clients[fd].setNick(cmd[1]);
+
+    if (!old_nick.empty() && clients[fd].getRegistered())
+    {
+        logState(fd, "Nick changed from " + old_nick + " to " + clients[fd].getNick());
+        return ":" + old_nick + "!" +
+               clients[fd].getUsername() +
+               "@localhost NICK " +
+               cmd[1] + "\r\n";
+    }
+
     if (!clients[fd].getRealname().empty())
     {
         clients[fd].setRegistered(1);
-        return ":IRC.SERV 001 :Welcome to the IRC network\r\n";
+        logState(fd, "Client fully registered");
+        return ":IRC.SERV 001 " + cmd[1] +
+               " :Welcome to the IRC network\r\n";
     }
+    logState(fd, "Nick set to " + clients[fd].getNick());
     return "";
 }
 
@@ -132,7 +161,8 @@ std::string Server::handlePass(std::vector<std::string> cmd, int fd)
     if (cmd[1] == pass)
     {
         clients[fd].setPASS_ok(1);
-        return "";
+        logState(fd, "Password accepted");
+        return "\r\n";
     }
     return ":IRC.SERV 464 PASS :Password incorrect\r\n";
 }

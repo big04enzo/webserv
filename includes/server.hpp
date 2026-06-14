@@ -48,7 +48,7 @@ private:
     std::string handleNick(std::vector<std::string> cmd, int fd);
     bool isNickUnique(const std::string &nick, int fd);
     std::string handleUser(std::vector<std::string> cmd, int fd);
-    std::string commandcheck(int fd);
+    void logState(int fd, const std::string &msg);
 
 public:
     Server(int port, std::string pass);

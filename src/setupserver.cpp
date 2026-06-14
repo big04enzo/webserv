@@ -37,9 +37,19 @@ void Server::setupSystem()
     std::memset(&sa, 0, sizeof(sa));
 
     sa.sa_handler = Server::signalHandler;
+    sigemptyset(&sa.sa_mask);
+    sa.sa_flags = 0;
 
     sigaction(SIGINT, &sa, NULL);
     sigaction(SIGTERM, &sa, NULL);
+
+    struct sigaction sa_pipe;
+    std::memset(&sa_pipe, 0, sizeof(sa_pipe));
+    sa_pipe.sa_handler = SIG_IGN;
+    sigemptyset(&sa_pipe.sa_mask);
+    sa_pipe.sa_flags = 0;
+
+    sigaction(SIGPIPE, &sa_pipe, NULL);
 }
 
 void Server::setupSocket()

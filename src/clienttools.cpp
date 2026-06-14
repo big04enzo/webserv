@@ -62,7 +62,11 @@ void Server::acceptClient()
 
     clients[client_fd] = Client(client_fd);
 
-    std::cout << "Client connected: " << client_fd << std::endl;
+    std::cout << "[CLIENT " << client_fd << "] " << " connected "<< std::endl;
+    std::cout << ":IRC.SERV 001 :Welcome! Please register" << std::endl;
+    std::cout << ":IRC.SERV 001 :PASS <server-password>" << std::endl;
+    std::cout << ":IRC.SERV 001 :NICK <nickname>" << std::endl;
+    std::cout << ":IRC.SERV 001 :USER <user> 0 * :<real name>" << std::endl;
 }
 
 void Server::readClient(int fd)
@@ -87,8 +91,6 @@ void Server::readClient(int fd)
             return ;
         }
     }
-
-    std::cout << commandcheck(fd) << std::endl;
 }
 
 void Server::removeClient(int fd)
@@ -96,6 +98,5 @@ void Server::removeClient(int fd)
     epoll_ctl(epoll_fd, EPOLL_CTL_DEL, fd, NULL);
     close(fd);
     clients.erase(fd);
-
-    std::cout << "Client disconnected: " << fd << std::endl;
+    std::cout << "[CLIENT " << fd << "] " << "disconnected" << std::endl;
 }

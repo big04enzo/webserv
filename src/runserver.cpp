@@ -5,11 +5,7 @@ void Server::setup()
     setupSystem();
     setupSocket();
     setupEpoll();
-
-    std::cout << ":IRC.SERV 001 :Welcome! Please register" << std::endl;
-    std::cout << ":IRC.SERV 001 :PASS <server-password>" << std::endl;
-    std::cout << ":IRC.SERV 001 :NICK <nickname>" << std::endl;
-    std::cout << ":IRC.SERV 001 :USER <user> 0 * :<real name>" << std::endl;
+    std::cout << "Server runing on port " << port << std::endl;
 }
 
 void Server::run()
