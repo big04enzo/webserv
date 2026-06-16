@@ -15,6 +15,7 @@
 #include "client.hpp"
 #include <cerrno>
 #include <sstream>
+#include <ctime>
 
 class Server
 {
@@ -49,6 +50,7 @@ private:
     bool isNickUnique(const std::string &nick, int fd);
     std::string handleUser(std::vector<std::string> cmd, int fd);
     void logState(int fd, const std::string &msg);
+    std::string generateWelcome(const std::string &nick);
 
 public:
     Server(int port, std::string pass);

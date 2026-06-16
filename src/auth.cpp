@@ -79,6 +79,30 @@ std::string reconstructRealName(const std::vector<std::string> &cmd)
     return realname;
 }
 
+std::string Server::generateWelcome(const std::string &nick)
+{
+    std::time_t now = std::time(NULL);
+    std::tm *lt = std::localtime(&now);
+
+    char timeBuf[64];
+    std::strftime(timeBuf, sizeof(timeBuf), "%Y-%m-%d %H:%M:%S", lt);
+
+    std::string welcome;
+
+    welcome += ":IRC.SERV 001 " + nick +
+               " :Welcome to the IRC network\r\n";
+    welcome += ":IRC.SERV 002 " + nick +
+               " :Your host is IRC.SERV, running version 1.0\r\n";
+
+    welcome += ":IRC.SERV 003 " + nick +
+               " :This server was created " + std::string(timeBuf) + "\r\n";
+
+    welcome += ":IRC.SERV 004 " + nick +
+               " IRC.SERV 1.0 itkol\r\n";
+
+    return welcome;
+}
+
 std::string Server::handleUser(std::vector<std::string> cmd, int fd)
 {
     if (clients[fd].getPASS_ok() != 1)
@@ -105,9 +129,8 @@ std::string Server::handleUser(std::vector<std::string> cmd, int fd)
     {
         clients[fd].setRegistered(1);
         logState(fd, "Client fully registered");
-        return ":IRC.SERV 001 " + clients[fd].getNick() + " :Welcome to the IRC network\r\n";
+        return generateWelcome(clients[fd].getNick() );
     }
-
     return "\r\n";
 }
 
@@ -143,11 +166,10 @@ std::string Server::handleNick(std::vector<std::string> cmd, int fd)
     {
         clients[fd].setRegistered(1);
         logState(fd, "Client fully registered");
-        return ":IRC.SERV 001 " + cmd[1] +
-               " :Welcome to the IRC network\r\n";
+        return generateWelcome(cmd[1]);
     }
     logState(fd, "Nick set to " + clients[fd].getNick());
-    return "";
+    return "\r\n";
 }
 
 std::string Server::handlePass(std::vector<std::string> cmd, int fd)

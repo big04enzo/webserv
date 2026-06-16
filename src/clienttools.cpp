@@ -63,10 +63,11 @@ void Server::acceptClient()
     clients[client_fd] = Client(client_fd);
 
     std::cout << "[CLIENT " << client_fd << "] " << " connected "<< std::endl;
-    std::cout << ":IRC.SERV 001 :Welcome! Please register" << std::endl;
-    std::cout << ":IRC.SERV 001 :PASS <server-password>" << std::endl;
-    std::cout << ":IRC.SERV 001 :NICK <nickname>" << std::endl;
-    std::cout << ":IRC.SERV 001 :USER <user> 0 * :<real name>" << std::endl;
+    std::cout << ":IRC.SERV :Welcome! Please register" << std::endl;
+    std::cout << ":IRC.SERV :PASS <server-password>" << std::endl;
+    std::cout << ":IRC.SERV :NICK <nickname>" << std::endl;
+    std::cout << ":IRC.SERV :USER <user> 0 * :<real name>" << std::endl;
+    std::cout << ":IRC.SERV :Commands must be UPPERCASE." << std::endl;
 }
 
 void Server::readClient(int fd)

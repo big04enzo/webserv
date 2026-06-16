@@ -40,17 +40,11 @@ std::string Server::handleCommands(const char *buffer, int fd)
 
     if (cmd.empty())
         return "";
-    std::string result = cmd[0];
-    for (size_t i = 0; i < result.size(); i++)
-    {
-        if (result[i] >= 'a' && result[i] <= 'z')
-            result[i] = result[i] - 32;
-    }
-    if (result == "PASS")
+    if (cmd[0] == "PASS")
         return handlePass(cmd, fd);
-    if (result == "NICK")
+    if (cmd[0] == "NICK")
         return handleNick(cmd,fd);
-    if (result == "USER")
+    if (cmd[0] == "USER")
         return handleUser(cmd, fd);
     return ":IRC.SERV 421 " + cmd[0] + " :Unknown command\r\n";
 }
